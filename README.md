@@ -33,3 +33,17 @@ WARNING: This is warning
 ERROR: This is error
 DEBUG: You could also use variables interpolation: 1 + 2 = 3
 ```
+
+## Development
+
+Deploy package to <test.pypi.org>:
+```
+python3 setup.py sdist
+python3 -m twine upload ---repository-url https://test.pypi.org/legacy/ dist/*
+```
+
+Deploy package to <pypi.org>:
+```
+python3 setup.py sdist
+python3 -m twine upload dist/*
+```
