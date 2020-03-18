@@ -17,6 +17,9 @@ def loco(logger):
     lines = inspect.getsource(f)
     new_lines = []
 
+    inject_n = 0
+    injects = {}
+
     for line in lines.split('\n'):
       if line.startswith('@'):
         continue
@@ -24,7 +27,14 @@ def loco(logger):
       for trigger, method in rules.items():
         m = re.match(f'^(.+){trigger}(.+)$', line)
         if m:
-          line = "{}logger_{}.{}(f'{}')".format(m.group(1), random, method, m.group(2).replace('\'', '\\\''))
+          indent = m.group(1)
+          content = m.group(2)
+
+          injects[f'inject_{inject_n}'] = content
+
+          line = "{}logger_{}.{}(inject_{})".format(indent, random, method, inject_n)
+
+          inject_n += 1
 
       new_lines.append(line)
 
@@ -32,7 +42,8 @@ def loco(logger):
 
     generated = {
       f'logger_{random}': logger,
-      **f.__globals__
+      **f.__globals__,
+      **injects
     }
     exec(new_source, generated)
 

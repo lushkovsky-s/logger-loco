@@ -28,7 +28,8 @@ def myfunc(a, b, x=MYCONST):
   #X Error
 
   #@ Inject {a} + {b} = {a + b}
-  print(external_var)
+  #@ External var: {external_var)
+  #@ Comment with manny backslashes \\\\\\ and quotes '''
 
   return a + b
 
