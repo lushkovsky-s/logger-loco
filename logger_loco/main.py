@@ -10,7 +10,7 @@ def loco(logger):
     '#!': 'warning',
     '#X': 'error'
   }
-  
+
   random = str(uuid.uuid4()).replace('-', '_')
 
   def decorator(f):
@@ -31,7 +31,8 @@ def loco(logger):
     new_source = '\n'.join(new_lines)
 
     generated = {
-      f'logger_{random}': logger
+      f'logger_{random}': logger,
+      **f.__globals__
     }
     exec(new_source, generated)
 
