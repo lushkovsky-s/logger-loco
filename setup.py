@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="logger-loco",
-    version="0.0.5",
+    version="0.1.0",
     author="Sergey Lushkovsky",
     author_email="s.lushkovsky@gmail.com",
     description="Comment-driven python loggin package",

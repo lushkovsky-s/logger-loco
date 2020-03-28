@@ -49,8 +49,17 @@ def fun2():
   #@ Regular
   ...
 
+@loco(logger)
+def func3():
+  # some
+  # ...
+  #...
+  #...
+  raise Exception('Some error')
+
 myfunc(1, 2)
 fun2()
+func3()
 
 @loco(logger)
 class MyCalss(object):

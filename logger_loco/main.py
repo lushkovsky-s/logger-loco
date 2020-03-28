@@ -64,15 +64,19 @@ def loco(logger, indent_symbol=' ', indent_size=2):
 
         new_lines.append(line)
 
-      new_source = '\n'.join(new_lines)
+      new_source = '\n' * f.__code__.co_firstlineno + '\n'.join(new_lines)
 
       generated = {
         f'logger_{random}': logger,
         **f.__globals__,
         **injects
       }
-      exec(new_source, generated)
 
-      return generated[f.__name__]
+      code = compile(new_source, f.__code__.co_filename, 'exec')
+      exec(code, generated)
+
+      generated_func = generated[f.__name__]
+
+      return generated_func
 
   return decorator
