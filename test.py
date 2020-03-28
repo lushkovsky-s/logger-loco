@@ -55,14 +55,23 @@ def func3():
   # ...
   #...
   #...
-  raise Exception('Some error')
+  try:
+    raise Exception('Some error')
+  except Exception as e:
+    print(e)
 
 myfunc(1, 2)
 fun2()
 func3()
 
+class OtherClass(object):
+  pass
+
 @loco(logger)
-class MyCalss(object):
+class MyCalss(OtherClass):
+  def __init__(self, *args, **kw):
+    super().__init__(*args, **kw)
+
   def method_a(self, a, b):
     #- Works inside class method a + b = {a + b}
     ...

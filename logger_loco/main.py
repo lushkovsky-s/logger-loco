@@ -22,7 +22,8 @@ def loco(logger, indent_symbol=' ', indent_size=2):
       members = inspect.getmembers(c, predicate=inspect.isfunction)
 
       for name, method in members:
-        setattr(c, name, decorator(method))
+        if not name.startswith('__') and not name.endswith('__'):
+          setattr(c, name, decorator(method))
 
       return c
     else:

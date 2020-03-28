@@ -22,7 +22,23 @@ def somefunc(a, b):
 
   #@ You could also use variables interpolation: {a} + {b} = {c}
 
+  #-->
+  #@ This is indented log
+  #-->
+  #@ This is deeper indented log
+  #<--
+  #<--
+  #@ This is not indented log
+
 somefunc(1, 2)
+
+@loco(logger)
+class Someclass(object):
+  def mymethod(self):
+    #@ Also works with classes
+    pass
+
+Someclass().mymethod()
 ```
   
 Will print:  
@@ -32,6 +48,10 @@ INFO: This is info
 WARNING: This is warning
 ERROR: This is error
 DEBUG: You could also use variables interpolation: 1 + 2 = 3
+DEBUG:   This is indented log
+DEBUG:     This is deeper indented log
+DEBUG: This is not indented log
+DEBUG: Also works with classes
 ```
 
 ## Development
