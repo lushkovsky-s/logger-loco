@@ -5,7 +5,7 @@ import functools
 
 current_indent = 0
 
-__DEBUG__=True
+__DEBUG__=False
 
 def loco(logger, indent_symbol=' ', indent_size=2):
   rules = {

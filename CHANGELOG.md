@@ -5,3 +5,7 @@
 * Added CHANGELOG.md
 * Added `##` rule for debug level logging
 * Added __DEBUG__ variable for verbose
+
+## 0.1.3
+
+* Fixed missed __DEBUG__=True 
