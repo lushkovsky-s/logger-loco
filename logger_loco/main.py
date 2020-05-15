@@ -5,9 +5,12 @@ import functools
 
 current_indent = 0
 
+__DEBUG__=True
+
 def loco(logger, indent_symbol=' ', indent_size=2):
   rules = {
     '#@': 'debug',
+    '##': 'debug',
     '#-': 'info',
     '#!': 'warning',
     '#X': 'error'
@@ -32,23 +35,36 @@ def loco(logger, indent_symbol=' ', indent_size=2):
       lines = inspect.getsource(f)
       new_lines = []
 
+      if __DEBUG__:
+        print('Function sources:')
+        print(lines)
+
       injects = {}
       extra_indention_len = ''
 
       global current_indent
 
+      if __DEBUG__:
+        print('Current indent:', current_indent)
+
       for line in lines.split('\n'):
         if line.startswith('@'):
+          if __DEBUG__:
+            print('Skil line ("@" found):', line)
           continue
-        if 'def' in line and ':' in line:
+        if 'def ' in line and ':' in line:
           m = re.match('( *)def.+:.*', line)
           extra_indention_len = len(m.group(1))
+          if __DEBUG__:
+            print('Function found:', line)
         if '-->' in line:
           current_indent += 1
-          continue
+          if __DEBUG__:
+            print('Indent incremented', line)
         if '<--' in line:
           current_indent -= 1
-          continue
+          if __DEBUG__:
+            print('Indent decremented', line)
 
         line = line[extra_indention_len:]
 
@@ -63,6 +79,8 @@ def loco(logger, indent_symbol=' ', indent_size=2):
 
             line = "{}logger_{}.{}(f'{}')".format(indent, random, method, content)
 
+        if __DEBUG__:
+            print('Appending line:', line)
         new_lines.append(line)
 
       new_source = '\n' * f.__code__.co_firstlineno + '\n'.join(new_lines)
@@ -72,6 +90,10 @@ def loco(logger, indent_symbol=' ', indent_size=2):
         **f.__globals__,
         **injects
       }
+
+      if __DEBUG__:
+        print('To be compiled:')
+        print(new_source)
 
       code = compile(new_source, f.__code__.co_filename, 'exec')
       exec(code, generated)

@@ -3,9 +3,11 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+exec(open('logger_loco/__version__.py').read())
+
 setuptools.setup(
     name="logger-loco",
-    version="0.1.1",
+    version=__version__,
     author="Sergey Lushkovsky",
     author_email="s.lushkovsky@gmail.com",
     description="Comment-driven python loggin package",
