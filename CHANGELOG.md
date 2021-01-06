@@ -9,3 +9,11 @@
 ## 0.1.3
 
 * Fixed missed __DEBUG__=True 
+
+## 0.1.4
+
+* Classes support (saved original indent)
+
+## 0.1.5
+
+* Fixed missed __DEBUG__=True

@@ -40,7 +40,7 @@ def loco(logger, indent_symbol=' ', indent_size=2):
         print(lines)
 
       injects = {}
-      extra_indention_len = ''
+      extra_indention_len = 0
 
       global current_indent
 
@@ -48,7 +48,8 @@ def loco(logger, indent_symbol=' ', indent_size=2):
         print('Current indent:', current_indent)
 
       for line in lines.split('\n'):
-        if line.startswith('@'):
+        if line.strip().startswith('@'):
+          current_indent = len(line.split('@')[0])
           if __DEBUG__:
             print('Skil line ("@" found):', line)
           continue
