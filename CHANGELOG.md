@@ -17,3 +17,12 @@
 ## 0.1.5
 
 * Fixed missed __DEBUG__=True
+
+## 0.1.6
+
+* Fixed nested functions case
+* __DEBUG__ from env variable
+
+## 0.1.7
+
+* Fixed debug lineno

@@ -4,3 +4,4 @@ dist/
 *.log
 *.pyc
 build/
+logger-loco-*/

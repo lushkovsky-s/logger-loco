@@ -2,10 +2,11 @@ import inspect
 import re
 import uuid
 import functools
+import os
 
 current_indent = 0
 
-__DEBUG__=False
+__DEBUG__=os.environ.get('__LOCO_DEBUG', False)
 
 def loco(logger, indent_symbol=' ', indent_size=2):
   rules = {
@@ -37,27 +38,42 @@ def loco(logger, indent_symbol=' ', indent_size=2):
 
       if __DEBUG__:
         print('Function sources:')
+        print('--------------------')
         print(lines)
+        print('--------------------')
 
       injects = {}
-      extra_indention_len = 0
+      extra_indention = 0
 
       global current_indent
 
       if __DEBUG__:
         print('Current indent:', current_indent)
 
+
+      loco_matched = False
+      outer_func_detected = False
+
       for line in lines.split('\n'):
-        if line.strip().startswith('@'):
-          current_indent = len(line.split('@')[0])
+        loco_matched_now = False
+        
+        if line.strip().startswith('@') and not outer_func_detected:
+          extra_indention_len = len(line.split('@')[0])
+
           if __DEBUG__:
-            print('Skil line ("@" found):', line)
-          continue
-        if 'def ' in line and ':' in line:
+              print('Found decorator, extra indention:', extra_indention_len)
+          
+          if line.strip().startswith('@loco') or line.strip().startswith('@logger_loco.loco'):
+              loco_matched = True
+              loco_matched_now = True
+              if __DEBUG__:
+                print('Matched loco decorator', line)
+        if 'def ' in line and ':' in line and loco_matched and not outer_func_detected:
           m = re.match('( *)def.+:.*', line)
-          extra_indention_len = len(m.group(1))
+          extra_indention = len(m.group(1))
           if __DEBUG__:
             print('Function found:', line)
+          outer_func_detected = True
         if '-->' in line:
           current_indent += 1
           if __DEBUG__:
@@ -67,7 +83,10 @@ def loco(logger, indent_symbol=' ', indent_size=2):
           if __DEBUG__:
             print('Indent decremented', line)
 
-        line = line[extra_indention_len:]
+        if not loco_matched_now:
+            line = line[extra_indention_len:]
+        else:
+            line = '# Loco decorator was here'
 
         for trigger, method in rules.items():
           m = re.match(f'^(.+){trigger}(.+)$', line)
@@ -84,7 +103,7 @@ def loco(logger, indent_symbol=' ', indent_size=2):
             print('Appending line:', line)
         new_lines.append(line)
 
-      new_source = '\n' * f.__code__.co_firstlineno + '\n'.join(new_lines)
+      new_source = '\n' * (f.__code__.co_firstlineno-1) + '\n'.join(new_lines)
 
       generated = {
         f'logger_{random}': logger,
@@ -94,7 +113,9 @@ def loco(logger, indent_symbol=' ', indent_size=2):
 
       if __DEBUG__:
         print('To be compiled:')
+        print('--------------------')
         print(new_source)
+        print('--------------------')
 
       code = compile(new_source, f.__code__.co_filename, 'exec')
       exec(code, generated)
